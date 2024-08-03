@@ -51,5 +51,10 @@ esExpertoEnMetales(Jugador):- jugador(Jugador), desarrollaTecnologia(Jugador, [h
 esExpertoEnMetales(Jugador):- jugador(Jugador), juegaPartida(Jugador, romanos).
 
 % 3. civilizacionPopular: cuando? → +1 jugador la eligen 
-civilizacionPopular(Civilizacion):- (length(juegaPartida(Civilizacion, _), cantidadJugadores), cantidadJugadores > 1).
-% En proceso ↑
+cantidadJugadores(Civilizacion, Cantidad):- findall(Jugador, juegaPartida(Jugadores, Civilizacion), Jugadores), length(Jugadores, Cantidad).
+civilizacionPopular(Civilizacion):- cantidadJugadores(Civilizacion, Cantidad), Cantidad > 1.
+
+% 5. civilizacionLider: cuando? → la civilizacion alcanzo TODAS (6) las tecnologias; esto es, para una misma civilizacion, sumo las tecnologias de cada jugador y si completan todas las tecnologias => es lider. 
+cantidadTecnologias(Civilizacion, Cantidad):- findall(Jugador, habilidadTecnologica(Jugador, Tecnologia),   )
+
+% civilizacionLider(Tecnologia, Cantidad):- 
