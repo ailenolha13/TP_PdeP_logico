@@ -61,8 +61,14 @@ esExpertoEnMetales(Jugador):-
     juegaPartida(Jugador, romanos).
 
 % 3. civilizacionPopular: cuando? → +1 jugador la eligen 
-civilizacionPopular(Civilizacion):- (length(juegaPartida(Civilizacion, _), cantidadJugadores), cantidadJugadores > 1).
-% En proceso ↑
+cantidadJugadores(Civilizacion, Cantidad):- findall(Jugador, juegaPartida(Jugadores, Civilizacion), Jugadores), length(Jugadores, Cantidad).
+civilizacionPopular(Civilizacion):- cantidadJugadores(Civilizacion, Cantidad), Cantidad > 1.
 
 % 4. Una tecnologia tiene alcance global si a nadie le falta desarrollarla
 tieneAlcanceGlobal(Tecnologia):- forall(jugador(Jugador), desarrollaTecnologia(Jugador, Tecnologia)).
+
+% 5. civilizacionLider: cuando? → la civilizacion alcanzo TODAS (6) las tecnologias; esto es, para una misma civilizacion, sumo las tecnologias de cada jugador y si completan todas las tecnologias => es lider. 
+cantidadTecnologias(Civilizacion, Cantidad):- findall(Jugador, habilidadTecnologica(Jugador, Tecnologia),   )
+
+% civilizacionLider(Tecnologia, Cantidad):- 
+
