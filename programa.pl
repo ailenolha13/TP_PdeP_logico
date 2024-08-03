@@ -120,11 +120,10 @@ vidaUnidad(campeon(Vida), VidaMax).
 vidaUnidad(piquero(1, sinEscudo), 50).
 vidaUnidad(piquero(2, sinEscudo), 65).
 vidaUnidad(piquero(3, sinEscudo), 70).
-
-% Vida maxima de los piqueros con escudo (tienen un 10% mas de vida que los sin escudos)
-VidaMaxima(piquero(Nivel, conEscudo), VidaActual) :-
-    VidaUnidad(piquero(Nivel, conEscudo), VidaActual),
-    VidaMax is VidaActual * 1.1.
+% piqueros con escudo tienen un 10% mas de vida que los sin escudos
+vidaUnidad(piquero(1, conEscudo), 55).
+vidaUnidad(piquero(2, conEscudo), 71.5).
+vidaUnidad(piquero(3, conEscudo), 77).
 
 % Encontramos la vida de la unidad especifica que tiene un jugador
 vidaUnidadJugador(Jugador, Vida) :-
