@@ -72,3 +72,68 @@ cantidadTecnologias(Civilizacion, Cantidad):- findall(Jugador, habilidadTecnolog
 
 % civilizacionLider(Tecnologia, Cantidad):- 
 
+% 6. Modelar lo necesario para representar las distintas unidades de cada jugador
+
+% Las unidades que existen son:
+% los campeones (con vida de 1 a 100)
+% los jinetes (que los puede haber a caballo o a camello)
+% los piqueros que tienen un nivel de 1 a 3, y pueden o no tener escudo
+
+% Modelamos las unidades
+unidad(campeon).
+unidad(jinete).
+unidad(piquero).
+
+campeon(Vida) :- between(1, 100, Vida).
+
+jinete(caballo).
+jinete(camallo).
+
+piquero(1, conEscudo).
+piquero(2, conEscudo).
+piquero(3, conEscudo).
+piquero(1, sinEscudo).
+piquero(2, sinEscudo).
+piquero(3, sinEscudo).
+
+% Modelamos las unidades que tiene cada jugador
+unidadQueTieneJugador(ana, jinete(caballo)).
+unidadQueTieneJugador(ana, piquero(1, conEscudo)).
+unidadQueTieneJugador(ana, piquero(2, sinEscudo)).
+
+unidadQueTieneJugador(beto, campeon(100)).
+unidadQueTieneJugador(beto, campeon(80)).
+unidadQueTieneJugador(beto, piquero(1, conEscudo)).
+unidadQueTieneJugador(beto, jinete(camello)).
+
+unidadQueTieneJugador(carola, piquero(3, sinEscudo)).
+unidadQueTieneJugador(carola, piquero(2, conEscudo)).
+
+% 7. Conocer la unidad con mas vida que tiene un jugador
+
+% Modelamos las vidas de las unidades
+vidaUnidad(jinete(camello), 80).
+vidaUnidad(jinete(caballo), 90).
+
+vidaUnidad(campeon(Vida), VidaMax).
+
+vidaUnidad(piquero(1, sinEscudo), 50).
+vidaUnidad(piquero(2, sinEscudo), 65).
+vidaUnidad(piquero(3, sinEscudo), 70).
+
+% Vida maxima de los piqueros con escudo (tienen un 10% mas de vida que los sin escudos)
+VidaMaxima(piquero(Nivel, conEscudo), VidaActual) :-
+    VidaUnidad(piquero(Nivel, conEscudo), VidaActual),
+    VidaMax is VidaActual * 1.1.
+
+% Encontramos la vida de la unidad especifica que tiene un jugador
+vidaUnidadJugador(Jugador, Vida) :-
+    unidadQueTieneJugador(Jugador, Unidad),
+    vidaUnidad(Unidad, Vida).
+
+% Encontramos la unidad con mas vida que tiene un jugador
+unidadConMasVida(Jugador, UnidadConMasVida) :-
+    findall(Vida, vidaUnidadJugador(Jugador, Vida), Vidas), % encontramos todas las vidas de las unidades del jugador
+    max_member(MaxVida, Vidas), % encontramos la vida maxima de todas las vidas
+    unidadQueTieneJugador(Jugador, UnidadConMasVida), % buscamos la unidad correspondiente a esa vida maxima
+    vidaUnidad(UnidadConMasVida, MaxVida). % obtenemos la vida de la unidad con mas vida
