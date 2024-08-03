@@ -11,7 +11,7 @@ jugador(ana).
 jugador(beto).
 jugador(carola).
 jugador(dimitri).
-jugador(elsa).
+% jugador(elsa). elsa queda excluida de la partida, pues no juega
 
 % Modelando civilizaciones:
 civilizacion(romanos).
@@ -63,3 +63,6 @@ esExpertoEnMetales(Jugador):-
 % 3. civilizacionPopular: cuando? → +1 jugador la eligen 
 civilizacionPopular(Civilizacion):- (length(juegaPartida(Civilizacion, _), cantidadJugadores), cantidadJugadores > 1).
 % En proceso ↑
+
+% 4. Una tecnologia tiene alcance global si a nadie le falta desarrollarla
+tieneAlcanceGlobal(Tecnologia):- forall(jugador(Jugador), desarrollaTecnologia(Jugador, Tecnologia)).
