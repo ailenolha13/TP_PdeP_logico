@@ -115,7 +115,7 @@ unidadQueTieneJugador(carola, piquero(2, conEscudo)).
 vidaUnidad(jinete(camello), 80).
 vidaUnidad(jinete(caballo), 90).
 
-vidaUnidad(campeon(Vida), VidaMax).
+vidaUnidad(campeon(Vida), Vida).
 
 vidaUnidad(piquero(1, sinEscudo), 50).
 vidaUnidad(piquero(2, sinEscudo), 65).
@@ -136,3 +136,25 @@ unidadConMasVida(Jugador, UnidadConMasVida) :-
     max_member(MaxVida, Vidas), % encontramos la vida maxima de todas las vidas
     unidadQueTieneJugador(Jugador, UnidadConMasVida), % buscamos la unidad correspondiente a esa vida maxima
     vidaUnidad(UnidadConMasVida, MaxVida). % obtenemos la vida de la unidad con mas vida
+
+% 7. Queremos saber si una unidad le gana a otra. Las unidades tienen una ventaja por tipo sobre otras.
+
+% Cualquier jinete le gana a cualquier campeon
+leGanaA(jinete(_), campeon(_)).
+
+% Cualquier campeon le gana a cualquier piquero
+leGanaA(campeon(_), piquero(_, _)).
+
+% Cualquier piquero le gana a cualquier jinete
+leGanaA(piquero(_, _), jinete(_)).
+
+% jinetes a camello le ganan a los a caballo
+leGanaA(jinete(camello), jinete(caballo)).
+
+% En caso de que no exista ventaja entre las unidades, se compara la vida (el de mayor vida gana).
+unidadLeGanaAOtra(Unidad1, Unidad2) :- leGanaA(Unidad1, Unidad2).
+unidadLeGanaAOtra(Unidad1, Unidad2) :- leGanaA(Unidad2, Unidad1).
+unidadLeGanaAOtra(Unidad1, Unidad2) :- 
+    vidaUnidad(Unidad1, Vida1),
+    vidaUnidad(Unidad2, Vida2),
+    Vida1 > Vida2.
