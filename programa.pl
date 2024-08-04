@@ -137,7 +137,7 @@ unidadConMasVida(Jugador, UnidadConMasVida) :-
     unidadQueTieneJugador(Jugador, UnidadConMasVida), % buscamos la unidad correspondiente a esa vida maxima
     vidaUnidad(UnidadConMasVida, MaxVida). % obtenemos la vida de la unidad con mas vida
 
-% 7. Queremos saber si una unidad le gana a otra. Las unidades tienen una ventaja por tipo sobre otras.
+% 8. Queremos saber si una unidad le gana a otra. Las unidades tienen una ventaja por tipo sobre otras.
 
 % Cualquier jinete le gana a cualquier campeon
 leGanaA(jinete(_), campeon(_)).
@@ -151,10 +151,28 @@ leGanaA(piquero(_, _), jinete(_)).
 % jinetes a camello le ganan a los a caballo
 leGanaA(jinete(camello), jinete(caballo)).
 
-% En caso de que no exista ventaja entre las unidades, se compara la vida (el de mayor vida gana).
+% En caso de que no exista ventaja entre las unidades, se compara la vida (el de mayor vida gana)
 unidadLeGanaAOtra(Unidad1, Unidad2) :- leGanaA(Unidad1, Unidad2).
 unidadLeGanaAOtra(Unidad1, Unidad2) :- leGanaA(Unidad2, Unidad1).
 unidadLeGanaAOtra(Unidad1, Unidad2) :- 
     vidaUnidad(Unidad1, Vida1),
     vidaUnidad(Unidad2, Vida2),
     Vida1 > Vida2.
+
+% 9. Saber si un jugador puede sobrevivir a un asedio
+
+% Obtenemos la cantidad de piqueros con escudo que tiene un jugador
+piquerosConEscudo(Jugador, Cantidad) :-
+    findall(piquero(Nivel, conEscudo), unidadQueTieneJugador(Jugador, piquero(Nivel, conEscudo)), Piqueros),
+    length(Piqueros, Cantidad).
+
+% Obtenemos la cantidad de piqueros sin escudo que tiene un jugador
+piquerosSinEscudo(Jugador, Cantidad) :-
+    findall(piquero(Nivel, sinEscudo), unidadQueTieneJugador(Jugador, piquero(Nivel, sinEscudo)), Piqueros),
+    length(Piqueros, Cantidad).
+
+% Un jugador puede sobrevivir a un asedio si tiene mas piqueros con escudo que sin escudo
+puedeSobrevivirAsedio(Jugador) :-
+    piquerosConEscudo(Jugador, ConEscudo),
+    piquerosSinEscudo(Jugador, SinEscudo),
+    ConEscudo > SinEscudo.
