@@ -75,13 +75,6 @@ listaTecnologias(Civilizacion, ListaTecno):- findall(Tecnologia, (juegaPartida(J
 % Modelando si una civilizacion es lider:
 civilizacionLider(Civilizacion):- listaTecnologias(Civilizacion, TecnoCivilizacion), listaTotalTecnologias(TotalTecnos), subset(TecnoCivilizacion, TotalTecnos).
 
-
-
-% 5. civilizacionLider: cuando? → la civilizacion alcanzo TODAS (6) las tecnologias; esto es, para una misma civilizacion, sumo las tecnologias de cada jugador y si completan todas las tecnologias => es lider. 
-cantidadTecnologias(Civilizacion, Cantidad):- findall(Jugador, habilidadTecnologica(Jugador, Tecnologia),   )
-
-% civilizacionLider(Tecnologia, Cantidad):- 
-
 % 6. Modelar lo necesario para representar las distintas unidades de cada jugador
 
 % Las unidades que existen son:
@@ -186,3 +179,28 @@ puedeSobrevivirAsedio(Jugador) :-
     piquerosConEscudo(Jugador, ConEscudo),
     piquerosSinEscudo(Jugador, SinEscudo),
     ConEscudo > SinEscudo.
+
+% 10. Arbol de tecnologias
+% a. Modelando arbol de tecnologias utilizando hechos
+% Notacion: dependeDe(tecnologiaDependiente, tecnologiaSinDependencia).
+% Arbol A:
+% nivel 1 del arbol
+dependeDe(emplumado, herreria). 
+dependeDe(forja, herreria).
+dependeDe(laminas, herreria).
+% nivel 2 del arbol:
+dependeDe(lanza, emplumado).
+dependeDe(fundicion, forja).
+dependeDe(c, laminas).
+% nivel 3 del arbol:
+dependeDe(soldadura, fundicion).
+dependeDe(d, c).
+
+% Arbol B:
+% nivel 1 del arbol: 
+dependeDe(x, molino).
+% nivel 2 del arbol:
+dependeDe(y, x).
+
+% b. puedeDesarrollarTecnologia → se da cuando cumplen con las dependencias directas e indirectas
+puedeDesarrollarTecnologia(Jugador, Tecnologia):- not(desarrollaTecnologia(Jugador, Tecnologia)), forall(dependeDe(Tecnologia, TecnoDependiente), desarrollaTecnologia(Jugador, TecnoDependiente)). 
