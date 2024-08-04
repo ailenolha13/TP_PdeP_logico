@@ -138,7 +138,6 @@ unidadConMasVida(Jugador, UnidadConMasVida) :-
     vidaUnidad(UnidadConMasVida, MaxVida). % obtenemos la vida de la unidad con mas vida
 
 % 8. Queremos saber si una unidad le gana a otra. Las unidades tienen una ventaja por tipo sobre otras.
-% 8. Queremos saber si una unidad le gana a otra. Las unidades tienen una ventaja por tipo sobre otras.
 
 % Cualquier jinete le gana a cualquier campeon
 leGanaA(jinete(_), campeon(_)).
