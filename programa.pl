@@ -46,9 +46,10 @@ desarrollaTecnologia(carola, herreria).
 desarrollaTecnologia(dimitri, herreria).
 desarrollaTecnologia(dimitri, fundicion).
 
+% ELIMINAR, PUES LOS PREDICADOS ESTÁN REPETIDOS
 % Asociando jugador, civilizacion y tecnologias:
-juegaConCivilizacion(Jugador, Civilizacion):- juegaPartida(Jugador, Civilizacion). 
-habilidadTecnologica(Jugador, Tecnologia):- desarrollaTecnologia(Jugador, Tecnologia).
+% juegaConCivilizacion(Jugador, Civilizacion):- juegaPartida(Jugador, Civilizacion). 
+% habilidadTecnologica(Jugador, Tecnologia):- desarrollaTecnologia(Jugador, Tecnologia).
 
 % 2. Es experto en metales cuando desarrollaTecnologia(herreria, forja, fundicion) o desarrollaTecnologia(herreria, forja) y civilizacion(romanos) 
 esExpertoEnMetales(Jugador):-
@@ -61,19 +62,36 @@ esExpertoEnMetales(Jugador):-
     juegaPartida(Jugador, romanos).
 
 % 3. civilizacionPopular: cuando? → +1 jugador la eligen 
-cantidadJugadores(Civilizacion, Cantidad):- findall(Jugador, juegaPartida(Jugadores, Civilizacion), Jugadores), length(Jugadores, Cantidad).
-civilizacionPopular(Civilizacion):- cantidadJugadores(Civilizacion, Cantidad), Cantidad > 1.
+cantidadJugadores(Civilizacion, Cantidad):-
+    juegaPartida(Jugador, Civilizacion),
+    findall(Jugador, juegaPartida(Jugadores, Civilizacion), Jugadores), 
+    length(Jugadores, Cantidad).
+civilizacionPopular(Civilizacion):- 
+    cantidadJugadores(Civilizacion, Cantidad), 
+    Cantidad > 1.
 
 % 4. Una tecnologia tiene alcance global si a nadie le falta desarrollarla
-tieneAlcanceGlobal(Tecnologia):- forall(jugador(Jugador), desarrollaTecnologia(Jugador, Tecnologia)).
+tieneAlcanceGlobal(Tecnologia):- 
+    desarrollaTecnologia(_, Tecnologia),
+    forall(jugador(Jugador), desarrollaTecnologia(Jugador, Tecnologia)).
 
 % 5. civilizacionLider: cuando? → la civilizacion alcanzo TODAS (5) las tecnologias; esto es, para una misma civilizacion, sumo las tecnologias de cada jugador y si completan todas las tecnologias => es lider. 
 % listaTotalTecnologias:
-listaTotalTecnologias(ListaTotalTecno):- findall(Tecnologia, desarrollaTecnologia(_, Tecnologia), Tecnologias), list_to_set(Tecnologias, ListaTotalTecno).
+listaTotalTecnologias(ListaTotalTecno):- 
+    desarrollaTecnologia(_, Tecnologia),
+    findall(Tecnologia, desarrollaTecnologia(_, Tecnologia), Tecnologias), 
+    list_to_set(Tecnologias, ListaTotalTecno).
 % lista de Tecnologias por civilizacion: 
-listaTecnologias(Civilizacion, ListaTecno):- findall(Tecnologia, (juegaPartida(Jugador, Civilizacion), desarrollaTecnologia(Jugador, Tecnologia)), Tecnologias), list_to_set(Tecnologias, ListaTecno).
+listaTecnologias(Civilizacion, ListaTecno):-
+    desarrollaTecnologia(_, Tecnologia), 
+    findall(Tecnologia, (juegaPartida(Jugador, Civilizacion), desarrollaTecnologia(Jugador, Tecnologia)), Tecnologias), 
+    list_to_set(Tecnologias, ListaTecno).
 % Modelando si una civilizacion es lider:
-civilizacionLider(Civilizacion):- listaTecnologias(Civilizacion, TecnoCivilizacion), listaTotalTecnologias(TotalTecnos), subset(TecnoCivilizacion, TotalTecnos).
+civilizacionLider(Civilizacion):- 
+    juegaPartida(_, Civilizacion),
+    listaTecnologias(Civilizacion, TecnoCivilizacion), 
+    listaTotalTecnologias(TotalTecnos), 
+    subset(TecnoCivilizacion, TotalTecnos).
 
 % 6. Modelar lo necesario para representar las distintas unidades de cada jugador
 
@@ -128,18 +146,17 @@ vidaUnidad(piquero(1, conEscudo), 55).
 vidaUnidad(piquero(2, conEscudo), 71.5).
 vidaUnidad(piquero(3, conEscudo), 77).
 
-% Encontramos la vida de la unidad especifica que tiene un jugador
-vidaUnidadJugador(Jugador, Vida) :-
-    unidadQueTieneJugador(Jugador, Unidad),
-    vidaUnidad(Unidad, Vida).
+% Encontramos la mayorr vida de una unidad que tiene un jugador
+vidaUnidadJugador(Jugador, VidaMax) :-
+    jugador(Jugador),
+    findall(Vida, (unidadQueTieneJugador(Jugador, Unidad), vidaUnidad(Unidad, Vida)), Vidas),
+    max_member(VidaMax, Vidas).
 
 % Encontramos la unidad con mas vida que tiene un jugador
-unidadConMasVida(Jugador, UnidadConMasVida) :-
-    findall(Vida, vidaUnidadJugador(Jugador, Vida), Vidas), % encontramos todas las vidas de las unidades del jugador
-    max_member(MaxVida, Vidas), % encontramos la vida maxima de todas las vidas
-    unidadQueTieneJugador(Jugador, UnidadConMasVida), % buscamos la unidad correspondiente a esa vida maxima
-    vidaUnidad(UnidadConMasVida, MaxVida). % obtenemos la vida de la unidad con mas vida
-
+unidadConMasVida(Jugador, Unidad) :-
+    unidadQueTieneJugador(Jugador, Unidad),
+    forall(vidaUnidadJugador(Jugador, Vida), vidaUnidad(Unidad, Vida)).
+    
 % 8. Queremos saber si una unidad le gana a otra. Las unidades tienen una ventaja por tipo sobre otras.
 
 % Cualquier jinete le gana a cualquier campeon
