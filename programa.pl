@@ -46,11 +46,6 @@ desarrollaTecnologia(carola, herreria).
 desarrollaTecnologia(dimitri, herreria).
 desarrollaTecnologia(dimitri, fundicion).
 
-% ELIMINAR, PUES LOS PREDICADOS ESTÁN REPETIDOS
-% Asociando jugador, civilizacion y tecnologias:
-% juegaConCivilizacion(Jugador, Civilizacion):- juegaPartida(Jugador, Civilizacion). 
-% habilidadTecnologica(Jugador, Tecnologia):- desarrollaTecnologia(Jugador, Tecnologia).
-
 % 2. Es experto en metales cuando desarrollaTecnologia(herreria, forja, fundicion) o desarrollaTecnologia(herreria, forja) y civilizacion(romanos) 
 esExpertoEnMetales(Jugador):-
     desarrollaTecnologia(Jugador, herreria),
