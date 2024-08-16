@@ -73,20 +73,17 @@ tieneAlcanceGlobal(Tecnologia):-
 % 5. civilizacionLider: cuando? → la civilizacion alcanzo TODAS (5) las tecnologias; esto es, para una misma civilizacion, sumo las tecnologias de cada jugador y si completan todas las tecnologias => es lider. 
 % listaTotalTecnologias:
 listaTotalTecnologias(ListaTotalTecno):- 
-    desarrollaTecnologia(_, Tecnologia),
     findall(Tecnologia, desarrollaTecnologia(_, Tecnologia), Tecnologias), 
     list_to_set(Tecnologias, ListaTotalTecno).
 % lista de Tecnologias por civilizacion: 
-listaTecnologias(Civilizacion, ListaTecno):-
-    desarrollaTecnologia(_, Tecnologia), 
+listaTecnologias(Civilizacion, ListaTecno):- 
+    civilizacion(Civilizacion),
     findall(Tecnologia, (juegaPartida(Jugador, Civilizacion), desarrollaTecnologia(Jugador, Tecnologia)), Tecnologias), 
     list_to_set(Tecnologias, ListaTecno).
 % Modelando si una civilizacion es lider:
 civilizacionLider(Civilizacion):- 
-    juegaPartida(_, Civilizacion),
-    listaTecnologias(Civilizacion, TecnoCivilizacion), 
-    listaTotalTecnologias(TotalTecnos), 
-    subset(TecnoCivilizacion, TotalTecnos).
+    civilizacion(Civilizacion),
+    forall(listaTecnologias(Civilizacion, Tecnologias), listaTotalTecnologias(Tecnologias)).
 
 % 6. Modelar lo necesario para representar las distintas unidades de cada jugador
 
@@ -168,7 +165,6 @@ leGanaA(jinete(camello), jinete(caballo)).
 
 % En caso de que no exista ventaja entre las unidades, se compara la vida (el de mayor vida gana)
 unidadLeGanaAOtra(Unidad1, Unidad2) :- leGanaA(Unidad1, Unidad2).
-unidadLeGanaAOtra(Unidad1, Unidad2) :- leGanaA(Unidad2, Unidad1).
 unidadLeGanaAOtra(Unidad1, Unidad2) :- 
     vidaUnidad(Unidad1, Vida1),
     vidaUnidad(Unidad2, Vida2),
@@ -178,16 +174,19 @@ unidadLeGanaAOtra(Unidad1, Unidad2) :-
 
 % Obtenemos la cantidad de piqueros con escudo que tiene un jugador
 piquerosConEscudo(Jugador, Cantidad) :-
+    jugador(Jugador),
     findall(piquero(Nivel, conEscudo), unidadQueTieneJugador(Jugador, piquero(Nivel, conEscudo)), Piqueros),
     length(Piqueros, Cantidad).
 
 % Obtenemos la cantidad de piqueros sin escudo que tiene un jugador
 piquerosSinEscudo(Jugador, Cantidad) :-
+    jugador(Jugador),
     findall(piquero(Nivel, sinEscudo), unidadQueTieneJugador(Jugador, piquero(Nivel, sinEscudo)), Piqueros),
     length(Piqueros, Cantidad).
 
 % Un jugador puede sobrevivir a un asedio si tiene mas piqueros con escudo que sin escudo
 puedeSobrevivirAsedio(Jugador) :-
+    jugador(Jugador),
     piquerosConEscudo(Jugador, ConEscudo),
     piquerosSinEscudo(Jugador, SinEscudo),
     ConEscudo > SinEscudo.
@@ -201,18 +200,20 @@ dependeDe(emplumado, herreria).
 dependeDe(forja, herreria).
 dependeDe(laminas, herreria).
 % nivel 2 del arbol:
-dependeDe(lanza, emplumado).
+dependeDe(pun, emplumado).
 dependeDe(fundicion, forja).
-dependeDe(c, laminas).
+dependeDe(mall, laminas).
 % nivel 3 del arbol:
-dependeDe(soldadura, fundicion).
-dependeDe(d, c).
+dependeDe(horno, fundicion).
+dependeDe(plac, mall).
 
 % Arbol B:
 % nivel 1 del arbol: 
-dependeDe(x, molino).
+dependeDe(colle, molino).
 % nivel 2 del arbol:
-dependeDe(y, x).
+dependeDe(arad, colle).
 
 % b. puedeDesarrollarTecnologia → se da cuando cumplen con las dependencias directas e indirectas
-puedeDesarrollarTecnologia(Jugador, Tecnologia):- not(desarrollaTecnologia(Jugador, Tecnologia)), forall(dependeDe(Tecnologia, TecnoDependiente), desarrollaTecnologia(Jugador, TecnoDependiente)). 
+puedeDesarrollarTecnologia(Jugador, Tecnologia):- 
+    not(desarrollaTecnologia(Jugador, Tecnologia)), 
+    forall(dependeDe(Tecnologia, TecnoDependiente), desarrollaTecnologia(Jugador, TecnoDependiente)). 
