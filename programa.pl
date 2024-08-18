@@ -218,6 +218,4 @@ dependeDe(arad, colle).
 puedeDesarrollarTecnologia(Jugador, Tecnologia):-
     jugador(Jugador),
     not(desarrollaTecnologia(Jugador, Tecnologia)),
-    forall(dependeDe(Tecnologia, TecnoDependiente),
-    desarrollaTecnologia(Jugador, TecnoDependiente)). 
-
+    forall(dependeDe(Tecnologia, TecnoDependiente), desarrollaTecnologia(Jugador, TecnoDependiente)).
