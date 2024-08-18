@@ -172,24 +172,31 @@ unidadLeGanaAOtra(Unidad1, Unidad2) :-
 
 % 9. Saber si un jugador puede sobrevivir a un asedio
 
+cantidadPiquerosConSinEscudo(Jugador, ConSinEscudo, Cantidad):- 
+    jugador(Jugador),
+    findall(piquero(_, ConSinEscudo), unidadQueTieneJugador(Jugador, piquero(_, ConSinEscudo)), Piqueros),
+    length(Piqueros, Cantidad).
+
 % Obtenemos la cantidad de piqueros con escudo que tiene un jugador
 piquerosConEscudo(Jugador, Cantidad) :-
-    jugador(Jugador),
-    findall(piquero(Nivel, conEscudo), unidadQueTieneJugador(Jugador, piquero(Nivel, conEscudo)), Piqueros),
-    length(Piqueros, Cantidad).
+    cantidadPiquerosConSinEscudo(Jugador, conEscudo, Cantidad).
+    % jugador(Jugador),
+    % findall(piquero(Nivel, conEscudo), unidadQueTieneJugador(Jugador, piquero(Nivel, conEscudo)), Piqueros),
+    % length(Piqueros, Cantidad).
 
 % Obtenemos la cantidad de piqueros sin escudo que tiene un jugador
 piquerosSinEscudo(Jugador, Cantidad) :-
-    jugador(Jugador),
-    findall(piquero(Nivel, sinEscudo), unidadQueTieneJugador(Jugador, piquero(Nivel, sinEscudo)), Piqueros),
-    length(Piqueros, Cantidad).
+    cantidadPiquerosConSinEscudo(Jugador, sinEscudo, Cantidad).
+    % jugador(Jugador),
+    % findall(piquero(Nivel, sinEscudo), unidadQueTieneJugador(Jugador, piquero(Nivel, sinEscudo)), Piqueros),
+    % length(Piqueros, Cantidad).
 
 % Un jugador puede sobrevivir a un asedio si tiene mas piqueros con escudo que sin escudo
 puedeSobrevivirAsedio(Jugador) :-
     jugador(Jugador),
-    piquerosConEscudo(Jugador, ConEscudo),
-    piquerosSinEscudo(Jugador, SinEscudo),
-    ConEscudo > SinEscudo.
+    piquerosConEscudo(Jugador, CantidadConEscudo),
+    piquerosSinEscudo(Jugador, CantidadSinEscudo),
+    CantidadConEscudo > CantidadSinEscudo.
 
 % 10. Arbol de tecnologias
 % a. Modelando arbol de tecnologias utilizando hechos
@@ -214,6 +221,6 @@ dependeDe(colle, molino).
 dependeDe(arad, colle).
 
 % b. puedeDesarrollarTecnologia → se da cuando cumplen con las dependencias directas e indirectas
-puedeDesarrollarTecnologia(Jugador, Tecnologia):- 
+puedeDesarrollarTecnologia(Jugador, Tecnologias):-
     not(desarrollaTecnologia(Jugador, Tecnologia)), 
-    forall(dependeDe(Tecnologia, TecnoDependiente), desarrollaTecnologia(Jugador, TecnoDependiente)). 
+    forall(desarrollaTecnologia(Jugador, Tecnologia), dependeDe(Tecnologia, Tecnologias)). 
