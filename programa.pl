@@ -215,18 +215,9 @@ dependeDe(colle, molino).
 dependeDe(arad, colle).
 
 % b. puedeDesarrollarTecnologia → se da cuando cumplen con las dependencias directas e indirectas
-
-    
-% puedeDesarrollarTecnologia(Jugador, Tecnologia):-
-%     jugador(Jugador),
-%     dependeDe(_, Tecnologia).
-
 puedeDesarrollarTecnologia(Jugador, Tecnologia):-
-    desarrollaTecnologia(Jugador, Tecno),
-    dependeDe(Tecnologia, Tecno).    
-
-
-% puedeDesarrollarTecnologia(Jugador, Tecnologias):-
-%     not(desarrollaTecnologia(Jugador, Tecnologia)), 
-%     forall(desarrollaTecnologia(Jugador, Tecnologia), dependeDe(Tecnologia, Tecnologias)). 
+    jugador(Jugador),
+    not(desarrollaTecnologia(Jugador, Tecnologia)),
+    forall(dependeDe(Tecnologia, TecnoDependiente),
+    desarrollaTecnologia(Jugador, TecnoDependiente)). 
 
