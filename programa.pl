@@ -180,16 +180,10 @@ cantidadPiquerosConSinEscudo(Jugador, ConSinEscudo, Cantidad):-
 % Obtenemos la cantidad de piqueros con escudo que tiene un jugador
 piquerosConEscudo(Jugador, Cantidad) :-
     cantidadPiquerosConSinEscudo(Jugador, conEscudo, Cantidad).
-    % jugador(Jugador),
-    % findall(piquero(Nivel, conEscudo), unidadQueTieneJugador(Jugador, piquero(Nivel, conEscudo)), Piqueros),
-    % length(Piqueros, Cantidad).
 
 % Obtenemos la cantidad de piqueros sin escudo que tiene un jugador
 piquerosSinEscudo(Jugador, Cantidad) :-
     cantidadPiquerosConSinEscudo(Jugador, sinEscudo, Cantidad).
-    % jugador(Jugador),
-    % findall(piquero(Nivel, sinEscudo), unidadQueTieneJugador(Jugador, piquero(Nivel, sinEscudo)), Piqueros),
-    % length(Piqueros, Cantidad).
 
 % Un jugador puede sobrevivir a un asedio si tiene mas piqueros con escudo que sin escudo
 puedeSobrevivirAsedio(Jugador) :-
@@ -221,6 +215,18 @@ dependeDe(colle, molino).
 dependeDe(arad, colle).
 
 % b. puedeDesarrollarTecnologia → se da cuando cumplen con las dependencias directas e indirectas
-puedeDesarrollarTecnologia(Jugador, Tecnologias):-
-    not(desarrollaTecnologia(Jugador, Tecnologia)), 
-    forall(desarrollaTecnologia(Jugador, Tecnologia), dependeDe(Tecnologia, Tecnologias)). 
+
+    
+% puedeDesarrollarTecnologia(Jugador, Tecnologia):-
+%     jugador(Jugador),
+%     dependeDe(_, Tecnologia).
+
+puedeDesarrollarTecnologia(Jugador, Tecnologia):-
+    desarrollaTecnologia(Jugador, Tecno),
+    dependeDe(Tecnologia, Tecno).    
+
+
+% puedeDesarrollarTecnologia(Jugador, Tecnologias):-
+%     not(desarrollaTecnologia(Jugador, Tecnologia)), 
+%     forall(desarrollaTecnologia(Jugador, Tecnologia), dependeDe(Tecnologia, Tecnologias)). 
+
