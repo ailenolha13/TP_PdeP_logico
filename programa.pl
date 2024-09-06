@@ -57,13 +57,7 @@ esExpertoEnMetales(Jugador):-
     juegaPartida(Jugador, romanos).
 
 % 3. civilizacionPopular: cuando? → +1 jugador la eligen 
-cantidadJugadores(Civilizacion, Cantidad):-
-    juegaPartida(Jugador, Civilizacion),
-    findall(Jugador, juegaPartida(Jugadores, Civilizacion), Jugadores), 
-    length(Jugadores, Cantidad).
-civilizacionPopular(Civilizacion):- 
-    cantidadJugadores(Civilizacion, Cantidad), 
-    Cantidad > 1.
+civilizacionPopular([_|Lista]).
 
 % 4. Una tecnologia tiene alcance global si a nadie le falta desarrollarla
 tieneAlcanceGlobal(Tecnologia):- 
@@ -102,13 +96,6 @@ campeon(Vida) :- between(1, 100, Vida).
 jinete(caballo).
 jinete(camallo).
 
-piquero(1, conEscudo).
-piquero(2, conEscudo).
-piquero(3, conEscudo).
-piquero(1, sinEscudo).
-piquero(2, sinEscudo).
-piquero(3, sinEscudo).
-
 % Modelamos las unidades que tiene cada jugador
 unidadQueTieneJugador(ana, jinete(caballo)).
 unidadQueTieneJugador(ana, piquero(1, conEscudo)).
@@ -146,8 +133,7 @@ vidaUnidadJugador(Jugador, VidaMax) :-
 
 % Encontramos la unidad con mas vida que tiene un jugador
 unidadConMasVida(Jugador, Unidad) :-
-    unidadQueTieneJugador(Jugador, Unidad),
-    forall(vidaUnidadJugador(Jugador, Vida), vidaUnidad(Unidad, Vida)).
+    unidadQueTieneJugador(Jugador, Unidad).
     
 % 8. Queremos saber si una unidad le gana a otra. Las unidades tienen una ventaja por tipo sobre otras.
 
@@ -217,5 +203,5 @@ dependeDe(arad, colle).
 % b. puedeDesarrollarTecnologia → se da cuando cumplen con las dependencias directas e indirectas
 puedeDesarrollarTecnologia(Jugador, Tecnologia):-
     jugador(Jugador),
-    not(desarrollaTecnologia(Jugador, Tecnologia)),
-    forall(dependeDe(Tecnologia, TecnoDependiente), desarrollaTecnologia(Jugador, TecnoDependiente)).
+    forall(dependeDe(Tecnologia, TecnoDependiente),
+    desarrollaTecnologia(Jugador, TecnoDependiente)).
